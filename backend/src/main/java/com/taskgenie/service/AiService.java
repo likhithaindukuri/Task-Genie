@@ -2,10 +2,20 @@ package com.taskgenie.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taskgenie.model.AiLog;
+import com.taskgenie.model.User;
+import com.taskgenie.repository.AiLogRepository;
+import com.taskgenie.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AiService {
@@ -14,6 +24,12 @@ public class AiService {
 
   private final WebClient webClient;
 
+  @Autowired
+  private AiLogRepository aiLogRepository;
+
+  @Autowired
+  private UserRepository userRepository;
+
   @Value("${groq.api.key}")
   private String groqApiKey;
 
@@ -21,7 +37,7 @@ public class AiService {
     this.webClient = webClient;
   }
 
-  public String generate(String prompt) {
+  public String generate(UUID userId, String prompt) {
     String requestJson = """
       {
         "model": "llama-3.1-8b-instant",
@@ -34,6 +50,7 @@ public class AiService {
       }
       """.formatted(prompt);
 
+    String aiResponse;
     try {
       Mono<String> responseMono = webClient
         .post()
@@ -46,16 +63,43 @@ public class AiService {
         .bodyToMono(String.class);
 
       String response = responseMono.block();
-      return extractContent(response);
+      aiResponse = extractContent(response);
     } catch (org.springframework.web.reactive.function.client.WebClientResponseException responseException) {
-      return "Groq API Error: The Groq server returned "
+      aiResponse = "Groq API Error: The Groq server returned "
         + responseException.getStatusCode().value()
         + ". Please verify your Groq API key, request model and check Groq dashboard. Details: "
         + responseException.getResponseBodyAsString();
     } catch (Exception exception) {
-      return "Groq API Error: Please check your internet connection, Groq API key configuration, or try again in a few minutes. Details: "
+      aiResponse = "Groq API Error: Please check your internet connection, Groq API key configuration, or try again in a few minutes. Details: "
         + exception.getMessage();
     }
+
+    saveAiLog(userId, prompt, aiResponse);
+    return aiResponse;
+  }
+
+  private void saveAiLog(UUID userId, String prompt, String aiResponse) {
+    try {
+      Optional<User> userOptional = userRepository.findById(userId);
+      if (userOptional.isPresent()) {
+        AiLog aiLog = new AiLog();
+        aiLog.setUser(userOptional.get());
+        aiLog.setPrompt(prompt);
+        aiLog.setAiResponse(aiResponse);
+        aiLogRepository.save(aiLog);
+      }
+    } catch (Exception exception) {
+      // Log error but don't fail the request if logging fails
+      System.err.println("Failed to save AI log: " + exception.getMessage());
+    }
+  }
+
+  public List<AiLog> getAiLogs(UUID userId) {
+    Optional<User> userOptional = userRepository.findById(userId);
+    if (userOptional.isEmpty()) {
+      throw new RuntimeException("User not found. Please verify the user ID and try again.");
+    }
+    return aiLogRepository.findByUser(userOptional.get());
   }
 
   private String extractContent(String json) {
