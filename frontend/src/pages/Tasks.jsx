@@ -45,22 +45,59 @@ export default function Tasks() {
     setIsGeneratingDescription(true);
     try {
       const aiDescription = await generateDescription(userId, formData.title);
-      // Format the response to ensure numbered points
+      // Clean and format the response
       let formattedDescription = aiDescription;
-      // If response doesn't start with numbers, try to format it
-      if (!/^\d+\./.test(formattedDescription.trim())) {
-        // Split by lines and number them
-        const lines = formattedDescription
-          .split("\n")
-          .filter((line) => line.trim().length > 0)
-          .slice(0, 6); // Take max 6 points
-        formattedDescription = lines
+      
+      // Remove markdown formatting (**, __, etc.)
+      formattedDescription = formattedDescription
+        .replace(/\*\*/g, "") // Remove bold
+        .replace(/\*/g, "") // Remove italic
+        .replace(/__/g, "") // Remove underline
+        .replace(/#{1,6}\s/g, "") // Remove headers
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"); // Remove links, keep text
+      
+      // Split by lines and extract main points
+      const lines = formattedDescription
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0 && !line.match(/^[^\d]*$/)); // Filter empty and non-numbered lines
+      
+      // Extract only top-level numbered points (1., 2., 3. not 1.1, 1.2, etc.)
+      const mainPoints = [];
+      for (const line of lines) {
+        // Match patterns like "1.", "1.", "2.", etc. at start of line
+        const topLevelMatch = line.match(/^(\d+)\.\s*(.+)$/);
+        if (topLevelMatch) {
+          const pointNum = parseInt(topLevelMatch[1]);
+          const pointText = topLevelMatch[2].trim();
+          // Only take points 1-6 and skip nested points (like 1.1, 1.2)
+          if (pointNum >= 1 && pointNum <= 6 && !line.match(/^\d+\.\d+/)) {
+            mainPoints.push(`${pointNum}. ${pointText}`);
+          }
+        }
+      }
+      
+      // If we found main points, use them; otherwise format from scratch
+      if (mainPoints.length > 0) {
+        formattedDescription = mainPoints.join("\n");
+      } else {
+        // Fallback: extract first 6 meaningful lines and number them
+        const cleanLines = lines
+          .filter((line) => {
+            // Remove lines that are headers or titles
+            return !line.match(/^[A-Z][^.!?]*$/); // Not all caps or title-like
+          })
+          .slice(0, 6);
+        
+        formattedDescription = cleanLines
           .map((line, index) => {
-            const cleanLine = line.replace(/^[-•*]\s*/, "").trim();
+            // Remove any existing numbering or bullets
+            const cleanLine = line.replace(/^[\d.\-•*]\s*/, "").trim();
             return `${index + 1}. ${cleanLine}`;
           })
           .join("\n");
       }
+      
       setFormData({ ...formData, description: formattedDescription });
     } catch (err) {
       alert("Error generating description: " + (err.response?.data?.message || err.message));

@@ -30,7 +30,7 @@ public class AiController {
     @PathVariable UUID userId,
     @RequestParam String title
   ) {
-    String prompt = "Generate a detailed task description with 5-6 clear, actionable points for: " + title + ". Format the response as numbered points (1, 2, 3, etc.) that are natural and clear. Each point should be a specific action item.";
+    String prompt = "Generate a task description with exactly 5-6 simple, actionable points for: " + title + ". Use plain English only - no markdown, no bold text, no special symbols. Format as simple numbered list: 1. First point, 2. Second point, 3. Third point, etc. Each point should be one clear sentence on a new line. Keep language natural and conversational.";
     return aiService.generate(userId, prompt);
   }
 
