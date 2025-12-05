@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { addTask, deleteTask, getTasks, updateTask } from "../services/taskService";
+import { generateDescription } from "../services/aiService";
 
 export default function Tasks() {
   const [showForm, setShowForm] = useState(false);
@@ -13,6 +14,7 @@ export default function Tasks() {
     status: "Pending",
   });
   const [editingTask, setEditingTask] = useState(null);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
@@ -33,6 +35,38 @@ export default function Tasks() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleGenerateDescription = async () => {
+    if (!formData.title.trim()) {
+      alert("Please enter a task title first");
+      return;
+    }
+    setIsGeneratingDescription(true);
+    try {
+      const aiDescription = await generateDescription(userId, formData.title);
+      // Format the response to ensure numbered points
+      let formattedDescription = aiDescription;
+      // If response doesn't start with numbers, try to format it
+      if (!/^\d+\./.test(formattedDescription.trim())) {
+        // Split by lines and number them
+        const lines = formattedDescription
+          .split("\n")
+          .filter((line) => line.trim().length > 0)
+          .slice(0, 6); // Take max 6 points
+        formattedDescription = lines
+          .map((line, index) => {
+            const cleanLine = line.replace(/^[-•*]\s*/, "").trim();
+            return `${index + 1}. ${cleanLine}`;
+          })
+          .join("\n");
+      }
+      setFormData({ ...formData, description: formattedDescription });
+    } catch (err) {
+      alert("Error generating description: " + (err.response?.data?.message || err.message));
+    } finally {
+      setIsGeneratingDescription(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -148,15 +182,25 @@ export default function Tasks() {
             {editingTask ? "Edit Task" : "Add New Task"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="title"
-              placeholder="Task Title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                name="title"
+                placeholder="Task Title"
+                value={formData.title}
+                onChange={handleChange}
+                className="flex-1 p-2 border rounded"
+                required
+              />
+              <button
+                type="button"
+                onClick={handleGenerateDescription}
+                disabled={isGeneratingDescription || !formData.title.trim()}
+                className="bg-purple-600 text-white px-4 py-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {isGeneratingDescription ? "Generating..." : "✨ Generate Description"}
+              </button>
+            </div>
             <textarea
               name="description"
               placeholder="Description"

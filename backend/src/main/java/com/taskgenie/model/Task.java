@@ -1,5 +1,6 @@
 package com.taskgenie.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -24,6 +25,7 @@ public class Task {
 
   private String title;
 
+  @Column(columnDefinition = "TEXT")
   private String description;
 
   private String category;

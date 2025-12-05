@@ -30,7 +30,7 @@ public class AiController {
     @PathVariable UUID userId,
     @RequestParam String title
   ) {
-    String prompt = "Generate a detailed task description for: " + title;
+    String prompt = "Generate a detailed task description with 5-6 clear, actionable points for: " + title + ". Format the response as numbered points (1, 2, 3, etc.) that are natural and clear. Each point should be a specific action item.";
     return aiService.generate(userId, prompt);
   }
 
