@@ -4,6 +4,7 @@ import com.taskgenie.model.Task;
 import com.taskgenie.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +26,14 @@ public class TaskController {
   @Autowired
   private TaskService taskService;
 
-  @PostMapping("/{userId}")
-  public Task createTask(@PathVariable UUID userId, @RequestBody Task task) {
-    return taskService.createTask(userId, task);
+  @PostMapping("/")
+  public Task createTask(@AuthenticationPrincipal String userId, @RequestBody Task task) {
+    return taskService.createTask(UUID.fromString(userId), task);
   }
 
-  @GetMapping("/{userId}")
-  public List<Task> getTasks(@PathVariable UUID userId) {
-    return taskService.getTasks(userId);
+  @GetMapping("/")
+  public List<Task> getTasks(@AuthenticationPrincipal String userId) {
+    return taskService.getTasks(UUID.fromString(userId));
   }
 
   @PutMapping("/{taskId}")

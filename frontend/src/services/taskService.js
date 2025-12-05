@@ -1,12 +1,12 @@
 import API from "./api";
 
-export const getTasks = async (userId) => {
-  const response = await API.get(`/tasks/${userId}`);
+export const getTasks = async () => {
+  const response = await API.get("/tasks/");
   return response.data;
 };
 
-export const addTask = async (userId, task) => {
-  const response = await API.post(`/tasks/${userId}`, task);
+export const addTask = async (task) => {
+  const response = await API.post("/tasks/", task);
   return response.data;
 };
 

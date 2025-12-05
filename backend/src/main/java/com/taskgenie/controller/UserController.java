@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
@@ -24,8 +26,9 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public User login(@RequestBody User loginRequest) {
-    return userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+  public Map<String, String> login(@RequestBody Map<String, String> loginRequest) {
+    String token = userService.loginUser(loginRequest.get("email"), loginRequest.get("password"));
+    return Map.of("token", token);
   }
 }
 

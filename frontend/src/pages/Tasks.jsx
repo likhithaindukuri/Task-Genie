@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { addTask, deleteTask, getTasks, updateTask } from "../services/taskService";
 import { generateDescription } from "../services/aiService";
+import { getUserIdFromToken } from "../utils/jwt";
 
 export default function Tasks() {
   const [showForm, setShowForm] = useState(false);
@@ -16,17 +17,17 @@ export default function Tasks() {
   const [editingTask, setEditingTask] = useState(null);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
 
-  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (userId) {
+    if (token) {
       loadTasks();
     }
-  }, [userId]);
+  }, [token]);
 
   const loadTasks = async () => {
     try {
-      const data = await getTasks(userId);
+      const data = await getTasks();
       setTasks(data);
     } catch (err) {
       alert("Error loading tasks: " + (err.response?.data?.message || err.message));
@@ -44,6 +45,11 @@ export default function Tasks() {
     }
     setIsGeneratingDescription(true);
     try {
+      const userId = getUserIdFromToken();
+      if (!userId) {
+        alert("Please login again");
+        return;
+      }
       const aiDescription = await generateDescription(userId, formData.title);
       // Clean and format the response
       let formattedDescription = aiDescription;
@@ -113,7 +119,7 @@ export default function Tasks() {
         await updateTask(editingTask.id, formData);
         alert("Task updated successfully!");
       } else {
-        await addTask(userId, formData);
+        await addTask(formData);
         alert("Task added successfully!");
       }
       setFormData({
@@ -128,7 +134,14 @@ export default function Tasks() {
       setEditingTask(null);
       loadTasks();
     } catch (err) {
-      alert("Error: " + (err.response?.data?.message || err.message));
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "Unknown error";
+      if (err.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("token");
+        window.location.href = "/";
+      } else {
+        alert("Error: " + errorMessage);
+      }
     }
   };
 
@@ -183,7 +196,7 @@ export default function Tasks() {
     });
   };
 
-  if (!userId) {
+  if (!token) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
         <h1 className="text-3xl font-bold mb-6">Please login to view tasks</h1>

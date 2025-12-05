@@ -7,19 +7,19 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (userId) {
+    if (token) {
       loadTasks();
     } else {
       setLoading(false);
     }
-  }, [userId]);
+  }, [token]);
 
   const loadTasks = async () => {
     try {
-      const data = await getTasks(userId);
+      const data = await getTasks();
       setTasks(data);
     } catch (err) {
       console.error("Error loading tasks:", err);
@@ -32,7 +32,7 @@ export default function Dashboard() {
   const completedTasks = tasks.filter((task) => task.status === "Completed").length;
   const pendingTasks = totalTasks - completedTasks;
 
-  if (!userId) {
+  if (!token) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
         <h1 className="text-3xl font-bold mb-6">Task Genie Dashboard ✨</h1>

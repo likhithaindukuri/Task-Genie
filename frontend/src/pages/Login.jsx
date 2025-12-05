@@ -17,12 +17,14 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await API.post("/users/login", data);
-      // Store user ID in localStorage for now (backend returns User object, not token yet)
-      if (res.data?.id) {
-        localStorage.setItem("userId", res.data.id);
+      // Store JWT token
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        alert("Login Successful!");
+        navigate("/dashboard");
+      } else {
+        alert("Login failed: No token received");
       }
-      alert("Login Successful!");
-      navigate("/dashboard");
     } catch (err) {
       alert("Invalid Credentials: " + (err.response?.data?.message || err.message || "Login failed"));
     }
