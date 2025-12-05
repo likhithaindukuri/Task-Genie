@@ -37,13 +37,19 @@ public class TaskController {
   }
 
   @PutMapping("/{taskId}")
-  public Task updateTask(@PathVariable UUID taskId, @RequestBody Task task) {
-    return taskService.updateTask(taskId, task);
+  public Task updateTask(
+      @AuthenticationPrincipal String userId,
+      @PathVariable UUID taskId,
+      @RequestBody Task task) {
+    return taskService.updateTask(UUID.fromString(userId), taskId, task);
   }
 
   @DeleteMapping("/{taskId}")
-  public String deleteTask(@PathVariable UUID taskId) {
-    return taskService.deleteTask(taskId);
+  public String deleteTask(
+      @AuthenticationPrincipal String userId,
+      @PathVariable UUID taskId) {
+    taskService.deleteTask(UUID.fromString(userId), taskId);
+    return "Task deleted successfully";
   }
 }
 

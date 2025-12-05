@@ -38,12 +38,16 @@ public class TaskService {
     return taskRepository.findByUser(user.get());
   }
 
-  public Task updateTask(UUID taskId, Task updatedTask) {
+  public Task updateTask(UUID userId, UUID taskId, Task updatedTask) {
     Optional<Task> existingTask = taskRepository.findById(taskId);
     if (existingTask.isEmpty()) {
       throw new RuntimeException("Task not found!");
     }
     Task task = existingTask.get();
+    // Verify task belongs to the user
+    if (!task.getUser().getId().equals(userId)) {
+      throw new RuntimeException("Unauthorized: You can only update your own tasks");
+    }
     task.setTitle(updatedTask.getTitle());
     task.setDescription(updatedTask.getDescription());
     task.setCategory(updatedTask.getCategory());
@@ -53,9 +57,16 @@ public class TaskService {
     return taskRepository.save(task);
   }
 
-  public String deleteTask(UUID taskId) {
-    taskRepository.deleteById(taskId);
-    return "Task deleted successfully";
+  public void deleteTask(UUID userId, UUID taskId) {
+    Optional<Task> task = taskRepository.findById(taskId);
+    if (task.isEmpty()) {
+      throw new RuntimeException("Task not found!");
+    }
+    // Verify task belongs to the user
+    if (!task.get().getUser().getId().equals(userId)) {
+      throw new RuntimeException("Unauthorized: You can only delete your own tasks");
+    }
+    taskRepository.delete(task.get());
   }
 }
 
