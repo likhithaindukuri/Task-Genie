@@ -18,8 +18,8 @@ export default function Register() {
     e.preventDefault();
     try {
       const res = await API.post("/users/register", data);
-      alert("Registered Successfully!");
-      navigate("/");
+      alert("Registered Successfully! Please login to continue.");
+      navigate("/login");
     } catch (err) {
       alert("Error: " + (err.response?.data?.message || err.message || "Registration failed"));
     }

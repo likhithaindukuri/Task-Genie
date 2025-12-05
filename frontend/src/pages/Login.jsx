@@ -21,7 +21,7 @@ export default function Login() {
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
         alert("Login Successful!");
-        navigate("/dashboard");
+        navigate("/");
       } else {
         alert("Login failed: No token received");
       }
