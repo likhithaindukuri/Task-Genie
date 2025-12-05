@@ -324,15 +324,15 @@ export default function Tasks() {
                     </h2>
                   </div>
                   {task.description && (
-                    <p
-                      className={`text-sm mt-1 ${
+                    <div
+                      className={`text-sm mt-1 whitespace-pre-wrap ${
                         task.status === "Completed"
                           ? "line-through text-gray-400"
                           : "text-gray-600"
                       }`}
                     >
                       {task.description}
-                    </p>
+                    </div>
                   )}
                   <div className="flex gap-4 mt-2 text-sm">
                     <span className="bg-blue-100 px-2 py-1 rounded">
