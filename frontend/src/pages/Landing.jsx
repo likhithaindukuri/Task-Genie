@@ -6,6 +6,12 @@ import dashboardIcon from "../assets/dashboard.png";
 import editIcon from "../assets/edit.png";
 import tasksIcon from "../assets/tasks.png";
 import logo from "../assets/logo.svg";
+import aiRobot from "../assets/ai-robot.png";
+import analyticsIcon from "../assets/analytics.png";
+import securityIcon from "../assets/security.png";
+import fastIcon from "../assets/fast.png";
+import completedIcon from "../assets/completed.png";
+import pendingIcon from "../assets/pending.png";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -159,33 +165,135 @@ export default function Landing() {
             )}
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mt-20">
-            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300">
-              <div className="text-4xl mb-4">🤖</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">AI-Powered Descriptions</h3>
-              <p className="text-gray-600">
-                Get intelligent task descriptions generated automatically. Just enter a title and
-                let AI create detailed action points for you.
-              </p>
-            </div>
+          {/* Feature Cards Carousel */}
+          <div className="mt-20 relative overflow-hidden bg-transparent">
+            <div className="flex gap-6 animate-scroll" style={{ animation: "scroll 30s linear infinite" }}>
+              {/* Card 1 - AI-Powered */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl shadow-xl border border-blue-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={aiRobot} alt="AI" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">AI-Powered Descriptions</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Get intelligent task descriptions generated automatically. Just enter a title and let AI create detailed action points for you.
+                </p>
+              </div>
 
-            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300">
-              <div className="text-4xl mb-4">📊</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Dashboard</h3>
-              <p className="text-gray-600">
-                Track your progress with real-time statistics. See completed tasks, pending items,
-                and stay motivated with visual insights.
-              </p>
-            </div>
+              {/* Card 2 - Smart Dashboard */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-purple-50 to-pink-100 p-8 rounded-2xl shadow-xl border border-purple-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={analyticsIcon} alt="Dashboard" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Smart Dashboard</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Track your progress with real-time statistics. See completed tasks, pending items, and stay motivated with visual insights.
+                </p>
+              </div>
 
-            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300">
-              <div className="text-4xl mb-4">🔒</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure & Private</h3>
-              <p className="text-gray-600">
-                Your tasks are encrypted and private. Each user can only access their own tasks
-                with JWT authentication.
-              </p>
+              {/* Card 3 - Secure & Private */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-green-50 to-emerald-100 p-8 rounded-2xl shadow-xl border border-green-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={securityIcon} alt="Secure" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Secure & Private</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Your tasks are encrypted and private. Each user can only access their own tasks with JWT authentication.
+                </p>
+              </div>
+
+              {/* Card 4 - Fast Performance */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-orange-50 to-amber-100 p-8 rounded-2xl shadow-xl border border-orange-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={fastIcon} alt="Fast" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Experience blazing-fast performance. Create, update, and manage tasks instantly with our optimized platform.
+                </p>
+              </div>
+
+              {/* Card 5 - Task Tracking */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-cyan-50 to-blue-100 p-8 rounded-2xl shadow-xl border border-cyan-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={completedIcon} alt="Tracking" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Progress Tracking</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Monitor your productivity with detailed progress tracking. See what's completed and what's pending at a glance.
+                </p>
+              </div>
+
+              {/* Card 6 - Priority Management */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-rose-50 to-pink-100 p-8 rounded-2xl shadow-xl border border-rose-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={pendingIcon} alt="Priority" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Priority Management</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Organize tasks by priority levels. Focus on what matters most with High, Medium, and Low priority settings.
+                </p>
+              </div>
+
+              {/* Duplicate all cards for seamless infinite loop */}
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl shadow-xl border border-blue-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={aiRobot} alt="AI" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">AI-Powered Descriptions</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Get intelligent task descriptions generated automatically. Just enter a title and let AI create detailed action points for you.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-purple-50 to-pink-100 p-8 rounded-2xl shadow-xl border border-purple-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={analyticsIcon} alt="Dashboard" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Smart Dashboard</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Track your progress with real-time statistics. See completed tasks, pending items, and stay motivated with visual insights.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-green-50 to-emerald-100 p-8 rounded-2xl shadow-xl border border-green-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={securityIcon} alt="Secure" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Secure & Private</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Your tasks are encrypted and private. Each user can only access their own tasks with JWT authentication.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-orange-50 to-amber-100 p-8 rounded-2xl shadow-xl border border-orange-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={fastIcon} alt="Fast" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Experience blazing-fast performance. Create, update, and manage tasks instantly with our optimized platform.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-cyan-50 to-blue-100 p-8 rounded-2xl shadow-xl border border-cyan-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={completedIcon} alt="Tracking" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Progress Tracking</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Monitor your productivity with detailed progress tracking. See what's completed and what's pending at a glance.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-80 bg-gradient-to-br from-rose-50 to-pink-100 p-8 rounded-2xl shadow-xl border border-rose-200 hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                  <img src={pendingIcon} alt="Priority" className="w-10 h-10 brightness-0 invert" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Priority Management</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Organize tasks by priority levels. Focus on what matters most with High, Medium, and Low priority settings.
+                </p>
+              </div>
             </div>
           </div>
 
