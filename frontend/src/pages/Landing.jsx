@@ -12,6 +12,8 @@ import securityIcon from "../assets/security.png";
 import fastIcon from "../assets/fast.png";
 import completedIcon from "../assets/completed.png";
 import pendingIcon from "../assets/pending.png";
+import tasksIconFeature from "../assets/tasks.png";
+import progressIconFeature from "../assets/progress.png";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -298,56 +300,100 @@ export default function Landing() {
           </div>
 
           {/* Additional Features */}
-          <div className="mt-20 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="mt-32">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                 Everything You Need to Stay Organized
               </h2>
-              <ul className="space-y-4 text-left">
-                <li className="flex items-start gap-3">
-                  <span className="text-2xl">✅</span>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Task Management</h4>
-                    <p className="text-gray-600">Create, update, and organize tasks with ease</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-2xl">📅</span>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Due Dates & Priorities</h4>
-                    <p className="text-gray-600">Set deadlines and prioritize what matters</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-2xl">🏷️</span>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Categories</h4>
-                    <p className="text-gray-600">Organize tasks by Work, Personal, or Others</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-2xl">📈</span>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Progress Tracking</h4>
-                    <p className="text-gray-600">Monitor your productivity and achievements</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl p-12 text-center">
-              <div className="text-6xl mb-4">🚀</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Get Started?</h3>
-              <p className="text-gray-700 mb-6">
-                Join thousands of users who are already organizing their lives with Task Genie
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Powerful features designed to help you manage your tasks efficiently and achieve your goals
               </p>
-              {!isLoggedIn && (
-                <button
-                  onClick={() => navigate("/register")}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-xl transform hover:scale-105 transition"
-                >
-                  Create Free Account
-                </button>
-              )}
+            </div>
+
+            {/* Feature Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {/* Feature 1 - Task Management */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:scale-105 transform transition duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-md">
+                  <img src={tasksIconFeature} alt="Tasks" className="w-8 h-8 brightness-0 invert" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Task Management</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Create, update, and organize tasks with ease. Full control at your fingertips.
+                </p>
+              </div>
+
+              {/* Feature 2 - Due Dates & Priorities */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:scale-105 transform transition duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 shadow-md">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Due Dates & Priorities</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Set deadlines and prioritize what matters most. Never miss an important task.
+                </p>
+              </div>
+
+              {/* Feature 3 - Categories */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:scale-105 transform transition duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-md">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Categories</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Organize tasks by Work, Personal, or Others. Keep everything neatly sorted.
+                </p>
+              </div>
+
+              {/* Feature 4 - Progress Tracking */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:scale-105 transform transition duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mb-4 shadow-md">
+                  <img src={progressIconFeature} alt="Progress" className="w-8 h-8 brightness-0 invert" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Progress Tracking</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Monitor your productivity and achievements. See how far you've come.
+                </p>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-12 md:p-16 text-center shadow-2xl">
+              <div className="absolute inset-0 bg-black/10"></div>
+              <div className="relative z-10">
+                <div className="inline-block mb-6">
+                  <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Ready to Transform Your Productivity?
+                </h3>
+                <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+                  Join thousands of users who are already organizing their lives with Task Genie. Start your journey today!
+                </p>
+                {!isLoggedIn ? (
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="px-8 py-4 bg-white text-blue-600 rounded-xl text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition duration-300"
+                  >
+                    Create Free Account →
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate("/tasks")}
+                    className="px-8 py-4 bg-white text-blue-600 rounded-xl text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition duration-300"
+                  >
+                    Start Managing Tasks →
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
