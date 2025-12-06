@@ -54,10 +54,10 @@ export default function Dashboard() {
     .filter((task) => task.status === "Completed")
     .slice(0, 3);
 
-  // Get tasks by priority
-  const highPriorityTasks = tasks.filter((task) => task.priority === "High" && task.status !== "Completed").length;
-  const mediumPriorityTasks = tasks.filter((task) => task.priority === "Medium" && task.status !== "Completed").length;
-  const lowPriorityTasks = tasks.filter((task) => task.priority === "Low" && task.status !== "Completed").length;
+  // Get tasks by priority (COMPLETED only)
+  const highPriorityTasks = tasks.filter((task) => task.priority === "High" && task.status === "Completed").length;
+  const mediumPriorityTasks = tasks.filter((task) => task.priority === "Medium" && task.status === "Completed").length;
+  const lowPriorityTasks = tasks.filter((task) => task.priority === "Low" && task.status === "Completed").length;
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -244,7 +244,7 @@ export default function Dashboard() {
               <div className="space-y-6">
                 {/* Priority Breakdown */}
                 <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Priority Breakdown</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Completed by Priority</h2>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
