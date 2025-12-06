@@ -91,7 +91,7 @@ export default function EditProfile() {
               onClick={() => navigate("/")}
               className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
             >
-              ✨ Task Genie
+              Task Genie
             </button>
             <button
               onClick={() => navigate("/dashboard")}
@@ -120,7 +120,7 @@ export default function EditProfile() {
                 <img
                   src={profileImage}
                   alt="Profile"
-                  className="w-32 h-32 rounded-full border-4 border-blue-500 shadow-lg object-cover"
+                  className="w-32 h-32 rounded-full shadow-lg object-cover"
                 />
                 <div className="absolute -bottom-2 -right-2 bg-blue-600 rounded-full p-2 shadow-lg">
                   <span className="text-white text-xl">📷</span>

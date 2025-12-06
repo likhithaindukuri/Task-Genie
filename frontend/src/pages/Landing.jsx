@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/profile.png";
+import signoutIcon from "../assets/signout.png";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -24,20 +25,21 @@ export default function Landing() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ✨ Task Genie
+                Task Genie
               </h1>
             </div>
             <div className="flex items-center gap-4">
               {isLoggedIn ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                    className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 transition"
-                  >
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowProfileDropdown(true)}
+                  onMouseLeave={() => setShowProfileDropdown(false)}
+                >
+                  <button className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 transition">
                     <img
                       src={profileIcon}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border-2 border-blue-500"
+                      className="w-10 h-10 rounded-full"
                     />
                   </button>
                   {showProfileDropdown && (
@@ -74,7 +76,8 @@ export default function Landing() {
                         onClick={handleSignOut}
                         className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2"
                       >
-                        <span>🚪</span> Sign Out
+                        <img src={signoutIcon} alt="Sign Out" className="w-4 h-4" />
+                        <span>Sign Out</span>
                       </button>
                     </div>
                   )}
@@ -238,20 +241,13 @@ export default function Landing() {
       <footer className="bg-white/80 backdrop-blur-md border-t border-gray-200 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-600">
-            <p className="font-semibold text-gray-900 mb-2">✨ Task Genie</p>
+            <p className="font-semibold text-gray-900 mb-2">Task Genie</p>
             <p>Your AI-Powered Task Management Solution</p>
             <p className="mt-4 text-sm">© 2024 Task Genie. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
-      {/* Close dropdown when clicking outside */}
-      {showProfileDropdown && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowProfileDropdown(false)}
-        ></div>
-      )}
     </div>
   );
 }
