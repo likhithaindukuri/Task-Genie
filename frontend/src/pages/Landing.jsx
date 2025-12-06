@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/profile.png";
 import signoutIcon from "../assets/signout.png";
+import dashboardIcon from "../assets/dashboard.png";
+import editIcon from "../assets/edit.png";
+import tasksIcon from "../assets/tasks.png";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -51,7 +54,8 @@ export default function Landing() {
                         }}
                         className="w-full text-left px-4 py-2 hover:bg-blue-50 text-gray-700 flex items-center gap-2"
                       >
-                        <span>📊</span> Your Dashboard
+                        <img src={dashboardIcon} alt="Dashboard" className="w-4 h-4" />
+                        <span>Your Dashboard</span>
                       </button>
                       <button
                         onClick={() => {
@@ -60,7 +64,8 @@ export default function Landing() {
                         }}
                         className="w-full text-left px-4 py-2 hover:bg-blue-50 text-gray-700 flex items-center gap-2"
                       >
-                        <span>📝</span> Your Tasks
+                        <img src={tasksIcon} alt="Tasks" className="w-4 h-4" />
+                        <span>Your Tasks</span>
                       </button>
                       <button
                         onClick={() => {
@@ -69,7 +74,8 @@ export default function Landing() {
                         }}
                         className="w-full text-left px-4 py-2 hover:bg-blue-50 text-gray-700 flex items-center gap-2"
                       >
-                        <span>👤</span> Edit Profile
+                        <img src={editIcon} alt="Edit Profile" className="w-4 h-4" />
+                        <span>Edit Profile</span>
                       </button>
                       <hr className="my-2" />
                       <button

@@ -98,7 +98,7 @@ export default function Register() {
           <div className="mb-8">
             <button
               onClick={() => navigate("/")}
-              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4"
+              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4"
             >
               Task Genie
             </button>
