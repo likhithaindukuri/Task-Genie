@@ -121,7 +121,7 @@ export default function Dashboard() {
             onClick={() => navigate("/tasks")}
             className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300 flex items-center gap-2"
           >
-            <img src={tasksIcon} alt="Tasks" className="w-5 h-5" />
+            <img src={tasksIcon} alt="Tasks" className="w-5 h-5 brightness-0 invert" />
             View All Tasks
           </button>
         </div>
