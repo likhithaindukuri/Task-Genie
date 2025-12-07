@@ -1,0 +1,51 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.java text
+*.js text
+*.jsx text
+*.json text
+*.xml text
+*.properties text
+*.md text
+*.yml text
+*.yaml text
+*.css text
+*.html text
+*.svg text
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.jar binary
+*.class binary
+
+# Exclude from language statistics (these won't be counted)
+frontend/node_modules/** linguist-vendored
+frontend/dist/** linguist-generated
+frontend/build/** linguist-generated
+backend/target/** linguist-generated
+*.min.js linguist-generated
+*.bundle.js linguist-generated
+package-lock.json linguist-generated
+
+# Force Java files to be counted (increase Java percentage)
+backend/**/*.java linguist-detectable=true
+backend/**/*.xml linguist-detectable=true
+backend/**/*.properties linguist-detectable=true
+
+# Mark frontend source files (but they're already counted by default)
+frontend/src/**/*.js linguist-detectable=true
+frontend/src/**/*.jsx linguist-detectable=true
+
+# Configuration files
+package.json linguist-detectable=false
+pom.xml linguist-detectable=true
+
