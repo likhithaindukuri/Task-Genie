@@ -13,9 +13,6 @@ Task Genie is a modern, intelligent task management application that leverages A
 - [About](#about)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
 - [Screenshots](#screenshots)
 - [Future Work](#future-work)
 - [Contributions](#contributions)
@@ -96,17 +93,58 @@ Enjoy a modern, responsive interface built with React and Tailwind CSS. The intu
 
 ## 📸 Screenshots
 
+### Sign In & Sign Up
+Beautiful authentication pages with modern design and user-friendly interface.
+
+<div align="center">
+  <img src="frontend/src/assets/signin1.png" alt="Sign In 1" width="800"/>
+  <img src="frontend/src/assets/signin2.png" alt="Sign In 2" width="800"/>
+  <img src="frontend/src/assets/signup1.png" alt="Sign Up 1" width="800"/>
+  <img src="frontend/src/assets/signup2.png" alt="Sign Up 2" width="800"/>
+</div>
+
 ### Landing Page
-Beautiful landing page with feature highlights and call-to-action buttons.
+Beautiful landing page with feature highlights, call-to-action buttons, and modern UI design.
+
+<div align="center">
+  <img src="frontend/src/assets/landingpage1.png" alt="Landing Page 1" width="800"/>
+  <img src="frontend/src/assets/landingpage2.png" alt="Landing Page 2" width="800"/>
+  <img src="frontend/src/assets/landingpage3.png" alt="Landing Page 3" width="800"/>
+  <img src="frontend/src/assets/landingpage4.png" alt="Landing Page 4" width="800"/>
+  <img src="frontend/src/assets/landingpage5.png" alt="Landing Page 5" width="800"/>
+  <img src="frontend/src/assets/landingpage6.png" alt="Landing Page 6" width="800"/>
+</div>
 
 ### Dashboard
 Interactive dashboard showing task statistics, completion rates, and priority breakdowns.
 
+<div align="center">
+  <img src="frontend/src/assets/dashboard1.png" alt="Dashboard 1" width="800"/>
+  <img src="frontend/src/assets/dashboard2.png" alt="Dashboard 2" width="800"/>
+</div>
+
 ### Task Management
 Intuitive task creation and management interface with filtering and sorting options.
 
+<div align="center">
+  <img src="frontend/src/assets/yourtasks1.png" alt="Your Tasks 1" width="800"/>
+  <img src="frontend/src/assets/yourtasks2.png" alt="Your Tasks 2" width="800"/>
+</div>
+
 ### Natural Language Input
 AI-powered task creation using plain English descriptions.
+
+<div align="center">
+  <img src="frontend/src/assets/naturallanginput.png" alt="Natural Language Input" width="800"/>
+</div>
+
+### Edit Profile
+User profile management interface with account settings and customization options.
+
+<div align="center">
+  <img src="frontend/src/assets/editprofile1.png" alt="Edit Profile 1" width="800"/>
+  <img src="frontend/src/assets/editprofile2.png" alt="Edit Profile 2" width="800"/>
+</div>
 
 ---
 
