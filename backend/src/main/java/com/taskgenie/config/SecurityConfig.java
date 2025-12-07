@@ -32,10 +32,14 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/users/register", "/api/users/login", "/api/ai/**", "/h2-console/**")
+            .requestMatchers("/api/users/register", "/api/users/login", "/h2-console/**")
             .permitAll()
             .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
             .permitAll()
+            .requestMatchers("/api/ai/generate-description/**", "/api/ai/generate-tasks/**", "/api/ai/summary/**", "/api/ai/logs/**")
+            .permitAll()
+            .requestMatchers("/api/ai/parse-task")
+            .authenticated()
             .anyRequest()
             .authenticated())
         .addFilterBefore(

@@ -41,17 +41,24 @@ public class JwtFilter extends OncePerRequestFilter {
       token = header.substring(7);
     }
 
-    if (token != null && jwtUtil.validateToken(token)) {
+    if (token != null) {
       try {
-        String userId = jwtUtil.getUserId(token);
-        UsernamePasswordAuthenticationToken auth =
-            new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
-        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        if (jwtUtil.validateToken(token)) {
+          String userId = jwtUtil.getUserId(token);
+          UsernamePasswordAuthenticationToken auth =
+              new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+          auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(auth);
+          logger.debug("JWT token validated and authentication set for user: " + userId);
+        } else {
+          logger.warn("Invalid JWT token provided");
+        }
       } catch (Exception ex) {
         // Log error but continue - let Spring Security handle unauthorized requests
-        logger.error("Error setting authentication: " + ex.getMessage());
+        logger.error("Error processing JWT token: " + ex.getMessage());
       }
+    } else {
+      logger.debug("No JWT token found in request");
     }
 
     filterChain.doFilter(request, response);

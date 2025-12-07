@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addTask, deleteTask, getTasks, updateTask } from "../services/taskService";
-import { generateDescription } from "../services/aiService";
+import { generateDescription, parseTaskFromNaturalLanguage } from "../services/aiService";
 import { getUserIdFromToken } from "../utils/jwt";
 import tasksIcon from "../assets/tasks.png";
 import aiRobot from "../assets/ai-robot.png";
@@ -21,6 +21,9 @@ export default function Tasks() {
   const [editingTask, setEditingTask] = useState(null);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [filterStatus, setFilterStatus] = useState("All");
+  const [naturalLanguageInput, setNaturalLanguageInput] = useState("");
+  const [isParsingTask, setIsParsingTask] = useState(false);
+  const [showNaturalLanguageInput, setShowNaturalLanguageInput] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -107,6 +110,158 @@ export default function Tasks() {
     }
   };
 
+  const handleParseNaturalLanguage = async () => {
+    if (!naturalLanguageInput.trim()) {
+      alert("Please enter a task description in natural language");
+      return;
+    }
+    if (!token) {
+      alert("You must be logged in to use this feature.");
+      return;
+    }
+    setIsParsingTask(true);
+    try {
+      // Verify token exists before making request
+      const currentToken = localStorage.getItem("token");
+      if (!currentToken) {
+        alert("Session expired. Please login again.");
+        navigate("/login");
+        return;
+      }
+      const aiResponse = await parseTaskFromNaturalLanguage(naturalLanguageInput);
+
+      // Try to parse JSON from AI response
+      let parsedData;
+      try {
+        // Clean the response - remove markdown code blocks if present
+        let cleanResponse = aiResponse.trim();
+        cleanResponse = cleanResponse.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+
+        // Extract JSON from response (might have extra text)
+        const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedData = JSON.parse(jsonMatch[0]);
+        } else {
+          console.error("AI Response (no JSON found):", aiResponse);
+          alert("AI response was not valid JSON. Please try again with a clearer description.\n\nResponse: " + aiResponse.substring(0, 200));
+          return;
+        }
+      } catch (jsonError) {
+        console.error("JSON parsing error:", jsonError);
+        console.error("AI Response:", aiResponse);
+        alert("AI response was not valid JSON. Please try again or refine your input.\n\nError: " + jsonError.message + "\n\nResponse: " + aiResponse.substring(0, 200));
+        return;
+      }
+
+      // Validate required fields - if no title, try to create one from description or input
+      if (!parsedData.title || !parsedData.title.trim()) {
+        // Try to extract title from description or use first few words of input
+        if (parsedData.description) {
+          const firstLine = parsedData.description.split('\n')[0];
+          parsedData.title = firstLine.replace(/^\d+\.\s*/, "").substring(0, 50).trim() || "New Task";
+        } else {
+          // Use first few words from original input as title
+          const words = naturalLanguageInput.trim().split(/\s+/).slice(0, 5).join(" ");
+          parsedData.title = words || "New Task";
+        }
+        console.warn("Title was missing, generated:", parsedData.title);
+      }
+
+      // Format and validate date if present
+      let formattedDueDate = parsedData.dueDate;
+      if (parsedData.dueDate && parsedData.dueDate !== "null" && parsedData.dueDate !== null) {
+        try {
+          const date = new Date(parsedData.dueDate);
+          if (!isNaN(date.getTime())) {
+            formattedDueDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+          } else {
+            formattedDueDate = null; // Invalid date
+          }
+        } catch {
+          formattedDueDate = null;
+        }
+      } else {
+        formattedDueDate = null;
+      }
+
+      // Validate and normalize priority
+      let priority = parsedData.priority || "Medium";
+      const priorityUpper = priority.trim().charAt(0).toUpperCase() + priority.trim().slice(1).toLowerCase();
+      if (priorityUpper === "High" || priorityUpper === "Medium" || priorityUpper === "Low") {
+        priority = priorityUpper;
+      } else {
+        // Try to infer from title/description
+        const textToCheck = (parsedData.title + " " + (parsedData.description || "")).toLowerCase();
+        if (textToCheck.match(/\b(urgent|asap|important|critical|emergency|must do|high priority|top priority|immediately|now|today|rush|pressing)\b/)) {
+          priority = "High";
+        } else if (textToCheck.match(/\b(low priority|optional|whenever|later|not urgent|can wait|someday|no rush)\b/)) {
+          priority = "Low";
+        } else {
+          priority = "Medium";
+        }
+      }
+
+      // Validate and normalize category
+      let category = parsedData.category || "Others";
+      const categoryOptions = ["Work", "Personal", "Health", "Education", "Others"];
+      if (!categoryOptions.includes(category)) {
+        // Try to infer from title/description
+        const textToCheck = (parsedData.title + " " + (parsedData.description || "")).toLowerCase();
+        if (textToCheck.match(/\b(work|business|meeting|project|office|job|professional|client|team|deadline|presentation|conference)\b/)) {
+          category = "Work";
+        } else if (textToCheck.match(/\b(personal|family|friends|home|household|shopping|personal care|vacation|trip)\b/)) {
+          category = "Personal";
+        } else if (textToCheck.match(/\b(health|fitness|doctor|medical|exercise|gym|workout|appointment|checkup|hospital)\b/)) {
+          category = "Health";
+        } else if (textToCheck.match(/\b(study|learn|course|class|exam|homework|assignment|school|university|education|research)\b/)) {
+          category = "Education";
+        } else {
+          category = "Others";
+        }
+      }
+
+      // Prepare task data with validated values
+      const taskData = {
+        title: parsedData.title.trim(),
+        description: parsedData.description || "No description provided",
+        category: category,
+        priority: priority,
+        status: parsedData.status || "Pending",
+        dueDate: formattedDueDate,
+      };
+
+      // Automatically create the task
+      await addTask(taskData);
+      alert("Task created successfully from your natural language input!");
+      
+      // Clear the input and hide the section
+      setNaturalLanguageInput("");
+      setShowNaturalLanguageInput(false);
+      
+      // Reload tasks to show the new one
+      await loadTasks();
+      
+    } catch (err) {
+      console.error("Error parsing task:", err);
+      const errorMessage = err.response?.data?.message || err.message || "Unknown error";
+      if (err.response?.status === 401) {
+        const currentToken = localStorage.getItem("token");
+        if (!currentToken) {
+          alert("Please login to use this feature.");
+          navigate("/login");
+        } else {
+          alert("Session expired. Please login again.");
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      } else {
+        alert("Error creating task: " + errorMessage);
+      }
+    } finally {
+      setIsParsingTask(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -156,7 +311,7 @@ export default function Tasks() {
       if (err.response?.status === 401) {
         alert("Session expired. Please login again.");
         localStorage.removeItem("token");
-        window.location.href = "/";
+        navigate("/login");
       } else {
         alert("Error: " + errorMessage);
       }
@@ -389,6 +544,69 @@ export default function Tasks() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Natural Language Input */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-8 mb-8 border-2 border-gray-200/50">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <img src={aiRobot} alt="AI" className="w-6 h-6 brightness-0 invert" />
+                </div>
+                Create Task with Natural Language
+              </h2>
+              <button
+                onClick={() => setShowNaturalLanguageInput(!showNaturalLanguageInput)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition text-sm"
+              >
+                {showNaturalLanguageInput ? "Hide" : "Show"}
+              </button>
+            </div>
+            {showNaturalLanguageInput && (
+              <>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded-r-lg">
+                  <p className="text-sm text-gray-700">
+                    <strong className="text-blue-700">How it works:</strong> Just describe your task in plain English, and our AI will automatically extract the title, deadline, priority, and category. The task will be created instantly!
+                  </p>
+                </div>
+                <p className="text-gray-600 mb-2 font-medium">Examples:</p>
+                <ul className="text-sm text-gray-600 mb-4 space-y-1 list-disc list-inside">
+                  <li>"Call Sarah tomorrow at 3pm about the project - urgent"</li>
+                  <li>"Doctor appointment next Monday, high priority"</li>
+                  <li>"Study for math exam on Friday"</li>
+                  <li>"Buy groceries this weekend, low priority"</li>
+                </ul>
+                <textarea
+                  value={naturalLanguageInput}
+                  onChange={(e) => setNaturalLanguageInput(e.target.value)}
+                  placeholder="e.g., 'Plan a team meeting for next Tuesday, high priority, discuss Q3 strategy.'"
+                  rows="4"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white resize-none mb-4"
+                ></textarea>
+                <button
+                  onClick={handleParseNaturalLanguage}
+                  disabled={isParsingTask || !naturalLanguageInput.trim()}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2"
+                >
+                  {isParsingTask ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Parsing...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Create Task
+                    </>
+                  )}
+                </button>
+              </>
+            )}
           </div>
 
           {/* Filter Tabs */}

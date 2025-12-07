@@ -10,6 +10,12 @@ API.interceptors.request.use(
     const token = localStorage.getItem("token");
     if (token) {
       req.headers.Authorization = `Bearer ${token}`;
+      // Debug: log token presence (don't log actual token for security)
+      if (req.url.includes("parse-task")) {
+        console.log("Sending request to parse-task with token:", token ? "Token present" : "No token");
+      }
+    } else {
+      console.warn("No token found in localStorage for request:", req.url);
     }
     return req;
   },
@@ -23,8 +29,12 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/";
+      // Only redirect if not already on login/register page
+      const currentPath = window.location.pathname;
+      if (currentPath !== "/login" && currentPath !== "/register" && currentPath !== "/") {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
