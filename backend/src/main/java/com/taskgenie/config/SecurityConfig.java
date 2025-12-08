@@ -39,13 +39,15 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/users/register", "/api/users/login", "/h2-console/**")
-            .permitAll()
             .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+            .permitAll()
+            .requestMatchers("/api/users/register", "/api/users/login")
+            .permitAll()
+            .requestMatchers("/h2-console/**")
             .permitAll()
             .requestMatchers("/api/ai/generate-description/**", "/api/ai/generate-tasks/**", "/api/ai/summary/**", "/api/ai/logs/**")
             .permitAll()
@@ -67,28 +69,27 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     
-    // Handle allowed origins - if "*" is set, allow all origins
-    // Note: When using "*", credentials must be disabled
-    boolean allowAllOrigins = "*".equals(allowedOrigins);
-    if (allowAllOrigins) {
-      configuration.addAllowedOriginPattern("*");
-      configuration.setAllowCredentials(false);
-    } else {
-      configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
-      configuration.setAllowCredentials(true);
-    }
+    // Allow all origins using pattern (works with credentials)
+    configuration.addAllowedOriginPattern("*");
+    configuration.setAllowCredentials(true);
     
-    // Set allowed methods from configuration
-    configuration.setAllowedMethods(Arrays.asList(allowedMethods.split(",")));
+    // Set allowed methods
+    List<String> methods = Arrays.asList(allowedMethods.split(","));
+    configuration.setAllowedMethods(methods);
     
-    // Set allowed headers - if "*" is set, allow all headers
-    if ("*".equals(allowedHeaders)) {
-      configuration.addAllowedHeader("*");
-    } else {
-      configuration.setAllowedHeaders(Arrays.asList(allowedHeaders.split(",")));
-    }
+    // Set allowed headers - explicitly list all needed headers
+    configuration.addAllowedHeader("Authorization");
+    configuration.addAllowedHeader("Content-Type");
+    configuration.addAllowedHeader("X-Requested-With");
+    configuration.addAllowedHeader("Accept");
+    configuration.addAllowedHeader("Origin");
+    configuration.addAllowedHeader("Access-Control-Request-Method");
+    configuration.addAllowedHeader("Access-Control-Request-Headers");
     
-    configuration.setExposedHeaders(List.of("Authorization"));
+    // Expose headers
+    configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setMaxAge(3600L);
+    
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
