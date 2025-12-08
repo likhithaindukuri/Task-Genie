@@ -14,6 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,9 +75,8 @@ public class SecurityConfig {
     configuration.addAllowedOriginPattern("*");
     configuration.setAllowCredentials(true);
     
-    // Set allowed methods
-    List<String> methods = Arrays.asList(allowedMethods.split(","));
-    configuration.setAllowedMethods(methods);
+    // Set allowed methods - include all common HTTP methods
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
     
     // Set allowed headers - explicitly list all needed headers
     configuration.addAllowedHeader("Authorization");
@@ -85,6 +86,7 @@ public class SecurityConfig {
     configuration.addAllowedHeader("Origin");
     configuration.addAllowedHeader("Access-Control-Request-Method");
     configuration.addAllowedHeader("Access-Control-Request-Headers");
+    configuration.addAllowedHeader("X-CSRF-TOKEN");
     
     // Expose headers
     configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
