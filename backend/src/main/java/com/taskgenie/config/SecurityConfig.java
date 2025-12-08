@@ -40,7 +40,8 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-      .csrf(csrf -> csrf.disable())
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/users/register", "/api/users/login", "/h2-console/**")
             .permitAll()
@@ -54,8 +55,7 @@ public class SecurityConfig {
             .authenticated())
         .addFilterBefore(
             jwtFilter,
-            org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
-        .httpBasic(Customizer.withDefaults());
+            org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
     // For H2 console if used
     http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
@@ -75,7 +75,7 @@ public class SecurityConfig {
       configuration.setAllowCredentials(false);
     } else {
       configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
-    configuration.setAllowCredentials(true);
+      configuration.setAllowCredentials(true);
     }
     
     // Set allowed methods from configuration
