@@ -662,8 +662,8 @@ export default function Tasks() {
                     disabled={isGeneratingDescription || !formData.title.trim()}
                     className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition flex items-center gap-2 whitespace-nowrap"
                   >
-                    <img src={aiRobot} alt="AI" className="w-5 h-5" />
-                    {isGeneratingDescription ? "Generating..." : "AI Generate"}
+                    <img src={aiRobot} alt="AI" className="w-5 h-5 brightness-0 invert" />
+                    {isGeneratingDescription ? "Generating..." : "Generate Description Using AI"}
                   </button>
                 </div>
               </div>

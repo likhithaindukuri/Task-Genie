@@ -75,7 +75,7 @@ public class SecurityConfig {
       configuration.setAllowCredentials(false);
     } else {
       configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
-      configuration.setAllowCredentials(true);
+    configuration.setAllowCredentials(true);
     }
     
     // Set allowed methods from configuration

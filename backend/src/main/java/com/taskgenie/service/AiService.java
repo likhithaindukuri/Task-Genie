@@ -6,16 +6,15 @@ import com.taskgenie.model.AiLog;
 import com.taskgenie.model.User;
 import com.taskgenie.repository.AiLogRepository;
 import com.taskgenie.repository.UserRepository;
-
+import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AiService {
@@ -37,6 +36,18 @@ public class AiService {
     this.webClient = webClient;
   }
 
+  @PostConstruct
+  private void logApiKeyStatus() {
+    if (groqApiKey == null || groqApiKey.isBlank()) {
+      System.err.println(
+          "Groq API key is missing. Set groq.api.key in application.properties or GROQ_API_KEY env variable.");
+      return;
+    }
+    groqApiKey = groqApiKey.trim();
+    System.out.println(
+        "Groq API key loaded (length=" + groqApiKey.length() + ", prefix=" + groqApiKey.substring(0, Math.min(8, groqApiKey.length())) + ")");
+  }
+
   public String generate(UUID userId, String prompt) {
     String requestJson = """
       {
@@ -49,6 +60,10 @@ public class AiService {
         ]
       }
       """.formatted(prompt);
+
+    if (groqApiKey == null || groqApiKey.isBlank()) {
+      return "Groq API Error: API key is not configured. Please set groq.api.key in application.properties or GROQ_API_KEY env variable.";
+    }
 
     String aiResponse;
     try {
